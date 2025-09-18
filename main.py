@@ -142,7 +142,7 @@ def oof_probs_for_mixed_nb(xc, xd, y, n_splits=5, random_state=42,
                            var_smoothing=1e-9, alpha=1.0, min_cats=None):
     
     skf = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=random_state)
-    oof_pos = np.zeros(len(y), dtype=float)   # one number per row: P(y=1)
+    oof_pos = np.zeros(len(y), dtype=float)   
 
     for tr_idx, va_idx in skf.split(xc, y):
         xc_tr, xc_va = xc[tr_idx], xc[va_idx]
@@ -152,7 +152,7 @@ def oof_probs_for_mixed_nb(xc, xd, y, n_splits=5, random_state=42,
         clf = MixedNaiveBayes(var_smoothing=var_smoothing, alpha=alpha, min_categories=min_cats)
         clf.fit(xc_tr, xd_tr, y_tr)
 
-        pos_idx = int(np.where(clf.classes_ == 1)[0][0])     # which column is class "1"?
+        pos_idx = int(np.where(clf.classes_ == 1)[0][0])    
         oof_pos[va_idx] = clf.predict_proba(xc_va, xd_va)[:, pos_idx]
 
     return oof_pos
@@ -167,7 +167,7 @@ class PlattCalibrator:
         self.lr = LogisticRegression(solver="lbfgs")
 
     def fit(self, p_uncal, y):
-        z = _logit_clip(p_uncal).reshape(-1, 1)  # feature = logit of uncalibrated prob
+        z = _logit_clip(p_uncal).reshape(-1, 1)  
         self.lr.fit(z, y)
         return self
 
